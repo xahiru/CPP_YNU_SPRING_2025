@@ -12,9 +12,9 @@
                 "-o",
                 "${fileDirname}/${fileBasenameNoExtension}"
             ],
-            "options": {
-                "cwd": "${fileDirname}"
-            },
+            // "options": {
+            //     "cwd": "${fileDirname}"
+            // },
             "problemMatcher": [
                 "$gcc"
             ],
