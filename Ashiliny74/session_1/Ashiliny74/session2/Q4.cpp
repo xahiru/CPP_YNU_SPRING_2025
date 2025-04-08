@@ -12,4 +12,12 @@ int main() {
     cin >> radius;
 
     // Calculate area and circumference
-    double area = M_PI * radius *_
+    double area = M_PI * radius * radius; // M_PI is a constant for the value of pi
+    double circumference = 2 * M_PI * radius;
+
+    // Output the results
+    cout << "The area of the circle is : " << area << endl;
+    cout << "The circumference of the circle is : " << circumference << endl;
+
+    return 0;
+}
