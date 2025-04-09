@@ -14,3 +14,4 @@ int main() {
     cout << "The volume of a cube is: " << volume << endl;
     return 0;
 }
+

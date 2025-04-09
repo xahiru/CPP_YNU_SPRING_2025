@@ -16,3 +16,4 @@ int main() {
 
     cout << "The area of the rectangle is:
     
+    
