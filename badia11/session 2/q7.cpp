@@ -1,7 +1,7 @@
 #include <iostream>
 using namespace std;
 
-// Function to find the maximum of four numbers
+
 int max_of_four(int a, int b, int c, int d) {
     return max(max(a, b), max(c, d));
 }
@@ -16,3 +16,4 @@ int main() {
 
     return 0;
 }
+
