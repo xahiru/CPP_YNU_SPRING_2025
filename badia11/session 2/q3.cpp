@@ -15,3 +15,4 @@ int main() {
     perimeter = 2 * (length + width);
 
     cout << "The area of the rectangle is:
+    
