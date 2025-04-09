@@ -16,9 +16,10 @@ int sum_from_to(int first, int last) {
 }
 
 int main() {
-    cout << sum_from_to(4, 7) << endl;  // Output: 22
-    cout << sum_from_to(-3, 1) << endl; // Output: -5
-    cout << sum_from_to(7, 4) << endl;  // Output: 22
-    cout << sum_from_to(9, 9) << endl;  // Output: 9
+    cout << sum_from_to(4, 7) << endl;  
+    cout << sum_from_to(-3, 1) << endl; 
+    cout << sum_from_to(7, 4) << endl; 
+    cout << sum_from_to(9, 9) << endl;  
     return 0;
 }
+
