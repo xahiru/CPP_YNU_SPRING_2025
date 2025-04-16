@@ -23,4 +23,5 @@ int main() {
     permuteString(inputString, 0, inputString.length() - 1);
 
     return 0;
+    
 }
