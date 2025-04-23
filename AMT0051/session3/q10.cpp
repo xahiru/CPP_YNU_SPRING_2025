@@ -1,9 +1,8 @@
 #include <iostream>
 
-// Recursive function to calculate sum
 int recursiveSum(int arr[], int size) {
     if (size == 0) {
-        return 0;  // base case
+        return 0;
     }
     return arr[size - 1] + recursiveSum(arr, size - 1);
 }

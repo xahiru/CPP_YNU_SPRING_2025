@@ -6,7 +6,6 @@ using namespace std;
 void findRepeatingElements(int arr[], int size) {
     unordered_map<int, int> freq;
 
-    // Count frequency of each element
     for (int i = 0; i < size; i++) {
         freq[arr[i]]++;
     }

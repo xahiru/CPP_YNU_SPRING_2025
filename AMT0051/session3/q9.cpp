@@ -3,7 +3,7 @@
 #include <vector>
 
 int main() {
-    // Sample array
+
     std::vector<int> arr = {1, 5, 7, 5, 8, 9, 11, 11, 2, 5, 6};
 
     std::unordered_set<int> unique_elements;
@@ -11,7 +11,7 @@ int main() {
     std::cout << "Original array: ";
     for (int num : arr) {
         std::cout << num << " ";
-        unique_elements.insert(num);  // insert each number into the set
+        unique_elements.insert(num);
     }
 
     std::cout << "\nUnique elements of the said array: ";

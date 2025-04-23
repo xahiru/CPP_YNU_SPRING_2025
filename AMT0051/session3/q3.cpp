@@ -1,9 +1,9 @@
 #include <iostream>
-#include <climits> // For INT_MAX
+#include <climits>
 using namespace std;
 
 int main() {
-    // Original array
+
     int arr[] = {5, 6, 7, 2, 3, 4, 12};
     int n = sizeof(arr) / sizeof(arr[0]);
 
@@ -19,7 +19,6 @@ int main() {
         }
     }
 
-    // Output
     cout << "Original array: ";
     for (int i = 0; i < n; i++) {
         cout << arr[i] << " ";

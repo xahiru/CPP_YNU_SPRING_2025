@@ -16,7 +16,6 @@ void findPairsWithSum(int arr[], int size, int targetSum) {
     for (int i = 0; i < size; i++) {
         int complement = targetSum - arr[i];
 
-        // If complement is already seen, we can form valid pairs
         if (freq[complement] > 0) {
             for (int j = 0; j < freq[complement]; j++) {
                 cout << complement << "," << arr[i] << " ";
@@ -24,7 +23,6 @@ void findPairsWithSum(int arr[], int size, int targetSum) {
             }
         }
 
-        // Increase frequency of current number
         freq[arr[i]]++;
     }
 

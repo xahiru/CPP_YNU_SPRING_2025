@@ -26,14 +26,14 @@ string findThirdLargestString(const vector<string>& arr) {
         advance(it, 2);
         int thirdLargestLength = *it;
 
-        // Return the first string matching that length
+    
         for (const auto& str : arr) {
             if (str.length() == thirdLargestLength)
                 return str;
         }
     }
 
-    return ""; // Should not reach here
+    return "";
 }
 
 int main() {
