@@ -10,7 +10,6 @@ int main() {
     int smallest = INT_MAX;
     int second_smallest = INT_MAX;
 
-    // Loop through the array to find smallest and second smallest
     for (int i = 0; i < n; i++) {
         if (arr[i] < smallest) {
             second_smallest = smallest;
