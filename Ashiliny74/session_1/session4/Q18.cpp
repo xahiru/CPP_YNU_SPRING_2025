@@ -32,4 +32,4 @@ int main() {
     cout << "Decimal equivalent: " << decimal << endl;
 
     return 0;
-}
+\
