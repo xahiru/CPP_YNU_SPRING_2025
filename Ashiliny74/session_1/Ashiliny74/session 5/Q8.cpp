@@ -1,50 +1,50 @@
 #include <iostream>
 #include <limits>
 
-int main() {
-    int count = 0;
-    int number;
-    int max = std::numeric_limits<int>::min();
-    int min = std::numeric_limits<int>::max();
-    double sum = 0.0;
+using namespace std;
 
-    std::cout << "Enter positive integers (terminate with -1): " << std::endl;
+int main() {
+    int input;
+    int count = 0;
+    int max = numeric_limits<int>::min(); // Start with the smallest possible integer
+    int min = numeric_limits<int>::max(); // Start with the largest possible integer
+    int total = 0;
+
+    cout << "Enter positive integers (enter -1 to terminate):" << endl;
 
     while (true) {
-        std::cin >> number;
-
-        // Check for termination condition
-        if (number == -1) {
-            break;
+        cin >> input;
+        
+        if (input == -1) {
+            break; // Termination signal
         }
 
-        // Validate that the number is positive
-        if (number > 0) {
+        // Check for positive integer
+        if (input > 0) {
             count++;
-            sum += number;
+            total += input;
 
-            if (number > max) {
-                max = number;
+            if (input > max) {
+                max = input;
             }
-
-            if (number < min) {
-                min = number;
+            if (input < min) {
+                min = input;
             }
         } else {
-            std::cout << "Please enter a positive integer or -1 to terminate." << std::endl;
+            cout << "Please enter a positive integer." << endl;
         }
     }
 
-    // Output the results
+    // Check if any positive integers were processed
     if (count > 0) {
-        double average = sum / count;
-        std::cout << "Your input is for termination. Here is the result below:" << std::endl;
-        std::cout << "Number of positive integers is: " << count << std::endl;
-        std::cout << "The maximum value is: " << max << std::endl;
-        std::cout << "The minimum value is: " << min << std::endl;
-        std::cout << "The average is: " << average << std::fixed << std::setprecision(2) << average << std::endl;
+        double average = static_cast<double>(total) / count;
+        cout << "\nYour input is for termination. Here is the result below:\n";
+        cout << "Number of positive integers is: " << count << endl;
+        cout << "The maximum value is: " << max << endl;
+        cout << "The minimum value is: " << min << endl;
+        cout << "The average is: " << average << endl;
     } else {
-        std::cout << "No positive integers were entered." << std::endl;
+        cout << "No positive integers were entered." << endl;
     }
 
     return 0;
