@@ -8,8 +8,8 @@
       "args": [],
       "stopAtEntry": false,
       "externalConsole": false,
-      "cwd": "/home/rabby/CPP_YNU_SPRING_2025/RABBY42/Lab-2",
-      "program": "/home/rabby/CPP_YNU_SPRING_2025/RABBY42/Lab-2/build/Debug/outDebug",
+      "cwd": "/home/rabby/CPP_YNU_SPRING_2025/RABBY42/Lab-4",
+      "program": "/home/rabby/CPP_YNU_SPRING_2025/RABBY42/Lab-4/build/Debug/outDebug",
       "MIMode": "gdb",
       "miDebuggerPath": "gdb",
       "setupCommands": [
