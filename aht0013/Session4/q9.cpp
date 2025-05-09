@@ -26,7 +26,7 @@ int main() {
     if (canRearrangeConsecutive(nums)) {
         cout << "True - Can be rearranged as consecutive numbers." << endl;
     } else {
-        cout << "False - Cannot be rearranged as consecutive numbers." << endl;
+        cout << "False  - Cannot be rearranged as consecutive numbers." << endl;
     }
     
     return 0;
