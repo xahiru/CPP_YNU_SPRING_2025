@@ -1,16 +1,3 @@
-// Windows (with g++ from MinGW or WSL)
-// g++ tic_tac_toe.cpp -o tic_tac_toe.exe
-
-// macOS
-// xcode-select --install
-// g++ tic_tac_toe.cpp -o tic_tac_toe
-
-// Linux (Ubuntu/Debian/Fedora/etc.)
-// sudo apt update
-// sudo apt install g++
-// g++ tic_tac_toe.cpp -o tic_tac_toe
-
-
 #include <iostream> // for input and output
 #include <array> // for array data structure
 #include <string> // for string manipulation
