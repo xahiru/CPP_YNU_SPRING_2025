@@ -1,5 +1,12 @@
 # Tic-Tac-Toe: Ultimate Edition
 
+## Game Preview
+<p align="center">
+  < img src="./game_start.jpg" alt="Tic-tac-toe Game Screenshot" width="500">
+  <br>
+  <em>Figure 1: Tic-tac-toe Game Running in Terminal</em>
+</p >
+
 ## Overview
 This is a simple, console-based Tic-Tac-Toe game developed as part of the Mid-Term Assignment for the Programming Language and C++ Practice course (YN3012140116).
 
