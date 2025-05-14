@@ -2,7 +2,7 @@
 
 ## Game Preview
 <p align="center">
-  < img src="./game_start.jpg" alt="Tic-tac-toe Game Screenshot" width="500">
+  <img src="./game_start.jpg" alt="Tic-tac-toe Game Screenshot" width="500">
   <br>
   <em>Figure 1: Tic-tac-toe Game Running in Terminal</em>
 </p >
