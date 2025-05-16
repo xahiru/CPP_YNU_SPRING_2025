@@ -1,0 +1,18 @@
+#include <iostream>
+using namespace std;
+
+bool isPangram(string str) {
+    bool seen[26] = {false};
+    for (char c : str) {
+        if (isalpha(c))
+            seen[tolower(c) - 'a'] = true;
+    }
+    for (bool b : seen) if (!b) return false;
+    return true;
+}
+
+int main() {
+    string str = "The quick brown fox jumps over the lazy dog";
+    cout << (isPangram(str) ? "Pangram" : "Not a pangram");
+    return 0;
+}
