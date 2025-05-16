@@ -1,16 +1,24 @@
 #include <iostream>
-#include <string>
-
-std::string sliceString(const std::string& s) {
-    return s.substr(1, s.length() - 2);
-}
+using namespace std;
 
 int main() {
-    std::string s = "Hello";
-    std::cout << sliceString(s) << std::endl; // Output: ell
+    int n;
+    cout << "Input: ";
+    cin >> n;
+    int matrix[n][n];
 
-    s = "World";
-    std::cout << sliceString(s) << std::endl; // Output: orl
+    cout << "Input an integer value: Create an n x n matrix by said integer:\n";
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            cin >> matrix[i][j];
+        }
+    }
 
+    for (int i = 0; i < n; ++i) {
+        for (int j = 0; j < n; ++j) {
+            cout << matrix[i][j] << " ";
+        }
+        cout << endl;
+    }
     return 0;
 }
