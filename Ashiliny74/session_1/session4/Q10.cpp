@@ -1,1 +1,0 @@
-p = i; // p points to i[0]
