@@ -8,14 +8,14 @@ int main() {
     int n = sizeof(arr) / sizeof(arr[0]);
 
     int smallest = INT_MAX;
-    int second_smallest = INT_MAX;
+    int secondSmallest = INT_MAX;
 
     for (int i = 0; i < n; i++) {
         if (arr[i] < smallest) {
-            second_smallest = smallest;
-            smallest = arr[i];
-        } else if (arr[i] < second_smallest && arr[i] != smallest) {
-            second_smallest = arr[i];
+            secondSmallest = smallest; 
+            smallest = arr[i];         
+        } else if (arr[i] < secondSmallest && arr[i] != smallest) {
+            secondSmallest = arr[i];  
         }
     }
 
@@ -25,10 +25,10 @@ int main() {
     }
     cout << endl;
 
-    if (second_smallest == INT_MAX) {
-        cout << "There is no second smallest number (all elements might be equal)." << endl;
+    if (secondSmallest == INT_MAX) {
+        cout << "There is no second smallest element." << endl;
     } else {
-        cout << "Second smallest number: " << second_smallest << endl;
+        cout << "Second smallest number: " << secondSmallest << endl;
     }
 
     return 0;
