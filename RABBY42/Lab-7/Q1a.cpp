@@ -8,6 +8,7 @@ bool isPalindrome(string s) {
     return s == rev;
 }
 
+
 int main() {
     string s;
     cin >> s;

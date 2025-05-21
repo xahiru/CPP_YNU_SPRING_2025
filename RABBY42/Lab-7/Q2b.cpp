@@ -10,6 +10,7 @@ void findPattern(string text, string pattern) {
     }
 }
 
+
 int main() {
     findPattern("abababab", "ab");
     return 0;

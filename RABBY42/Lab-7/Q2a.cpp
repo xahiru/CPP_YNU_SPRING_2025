@@ -12,6 +12,7 @@ void findPattern(string text, string pat) {
     }
 }
 
+
 int main() {
     string text, pat;
     cin >> text >> pat;
