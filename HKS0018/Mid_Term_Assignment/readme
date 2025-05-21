@@ -6,7 +6,7 @@ On Windows:
 
 On Linux/Mac:
 1.Open Terminal
-2.Compile with: g++ car_racing.cpp -o car_racing -lncurses
+2.Compile with:  g++ car_racing.cpp -o car_racing -std=c++11
 3.Run with: ./car_racing
 
 Game Features:
