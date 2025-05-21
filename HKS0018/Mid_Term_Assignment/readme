@@ -1,0 +1,24 @@
+How to Compile and run
+On Windows:
+1.Open command Prompt
+2.Compile with: g++ car_racing.cpp -o car_racing
+3.Run with: car_racing
+
+On Linux/Mac:
+1.Open Terminal
+2.Compile with: g++ car_racing.cpp -o car_racing -lncurses
+3.Run with: ./car_racing
+
+Game Features:
+1.Menu System: Start game, view instructions, or quit
+
+2.Scoreboard: Shows current score, high score, and speed
+
+3.Controls: A (left), D (right), Q (quit)
+
+4.Progressive Difficulty: Game speeds up as you score more points
+
+5.Collision Detection: Hitting obstacles ends the game
+
+6.Cross-Platform: Works on Windows, Linux, and macOS
+
