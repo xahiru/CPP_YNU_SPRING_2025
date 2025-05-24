@@ -1,16 +1,15 @@
 #include <iostream>
-#include <climits> // For INT_MAX
+#include <climits>
 using namespace std;
 
 int main() {
-    // Original array
+
     int arr[] = {5, 6, 7, 2, 3, 4, 12};
     int n = sizeof(arr) / sizeof(arr[0]);
 
     int smallest = INT_MAX;
     int second_smallest = INT_MAX;
 
-    // Loop through the array to find smallest and second smallest
     for (int i = 0; i < n; i++) {
         if (arr[i] < smallest) {
             second_smallest = smallest;
@@ -20,7 +19,6 @@ int main() {
         }
     }
 
-    // Output
     cout << "Original array: ";
     for (int i = 0; i < n; i++) {
         cout << arr[i] << " ";
