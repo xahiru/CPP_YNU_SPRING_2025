@@ -1,0 +1,20 @@
+Dr. Alice Brown
+F2001
+45
+Computer Science
+Prof. David Miller
+F2002
+50
+Mathematics
+Dr. Sarah Lee
+F2003
+38
+Physics
+Prof. James Taylor
+F2004
+55
+Engineering
+Dr. Olivia Clark
+F2005
+42
+Biology

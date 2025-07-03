@@ -1,2 +1,10 @@
+BIO101
+Introduction to Biology
+CS101
+Introduction to Computer Science
+ENG301
+Advanced Engineering
+MATH201
+Calculus II
 PHYS101
-Physic
+General Physics
