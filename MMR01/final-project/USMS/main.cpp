@@ -13,51 +13,27 @@
 
 using namespace std;
 
-// ====================== Template Definitions ======================
-template<typename Container, typename Key>
-auto* searchById(const Container& container, const Key& id) {
-    auto it = container.find(id);
-    return it != container.end() ? it->second : nullptr;
-}
-
-template<typename T>
-class Notification {
-    T message;
-    string timestamp;
-public:
-    Notification(const T& msg) : message(msg) {
-        time_t now = time(nullptr);
-        timestamp = ctime(&now);
-        timestamp.pop_back(); // Remove newline
-    }
-    
-    void display() const {
-        cout << "[" << timestamp << "] " << message << endl;
-    }
-};
-
 // ====================== Exception Classes ======================
 class DuplicateIdException : public runtime_error {
 public:
-    DuplicateIdException(const string& id)
-        : runtime_error("Duplicate ID found: " + id) {}
+    DuplicateIdException(const string& id) : runtime_error("Duplicate ID found: " + id) {}
 };
 
 class NotFoundException : public runtime_error {
 public:
-    NotFoundException(const string& type, const string& id)
+    NotFoundException(const string& type, const string& id) 
         : runtime_error(type + " not found with ID: " + id) {}
 };
 
 class InvalidInputException : public runtime_error {
 public:
-    InvalidInputException(const string& message)
+    InvalidInputException(const string& message) 
         : runtime_error("Invalid input: " + message) {}
 };
 
 class EnrollmentException : public runtime_error {
 public:
-    EnrollmentException(const string& message)
+    EnrollmentException(const string& message) 
         : runtime_error("Enrollment error: " + message) {}
 };
 
@@ -69,7 +45,7 @@ protected:
     int age;
 
 public:
-    Person(const string& name, const string& id, int age)
+    Person(const string& name, const string& id, int age) 
         : name(name), id(id), age(age) {}
 
     virtual ~Person() = default;
@@ -85,20 +61,61 @@ public:
     virtual void display() const {
         cout << "ID: " << id << "\nName: " << name << "\nAge: " << age << endl;
     }
-
-    bool operator==(const Person& other) const {
-        return id == other.id;
-    }
-
-    friend ostream& operator<<(ostream& os, const Person& person) {
-        person.display();
-        return os;
-    }
 };
 
-// Forward declarations
-class Course;
-class Gradebook;
+// ====================== Course Class ======================
+class Course {
+private:
+    string courseCode;
+    string title;
+    Person* facultyInCharge;
+    map<string, Person*> enrolledStudents;
+
+public:
+    Course(const string& courseCode, const string& title) 
+        : courseCode(courseCode), title(title), facultyInCharge(nullptr) {}
+
+    string getCourseCode() const { return courseCode; }
+    string getTitle() const { return title; }
+    Person* getFacultyInCharge() const { return facultyInCharge; }
+
+    void assignFaculty(Person* faculty) {
+        if (facultyInCharge == faculty) {
+            throw EnrollmentException("Faculty already in charge of this course");
+        }
+        facultyInCharge = faculty;
+    }
+
+    void removeFaculty() {
+        facultyInCharge = nullptr;
+    }
+
+    void enrollStudent(Person* student) {
+        if (enrolledStudents.find(student->getId()) != enrolledStudents.end()) {
+            throw EnrollmentException("Student already enrolled in this course");
+        }
+        enrolledStudents[student->getId()] = student;
+    }
+
+    void dropStudent(const string& studentId) {
+        if (enrolledStudents.find(studentId) == enrolledStudents.end()) {
+            throw NotFoundException("Enrollment", studentId);
+        }
+        enrolledStudents.erase(studentId);
+    }
+
+    const map<string, Person*>& getEnrolledStudents() const { return enrolledStudents; }
+
+    void display() const {
+        cout << "Course Code: " << courseCode << "\nTitle: " << title << endl;
+        if (facultyInCharge) {
+            cout << "Faculty In Charge: " << facultyInCharge->getName() << endl;
+        } else {
+            cout << "Faculty In Charge: Not assigned" << endl;
+        }
+        cout << "Enrolled Students: " << enrolledStudents.size() << endl;
+    }
+};
 
 // ====================== Student Class ======================
 class Student : public Person {
@@ -107,20 +124,31 @@ private:
     map<string, Course*> enrolledCourses;
 
 public:
-    Student(const string& name, const string& id, int age)
+    Student(const string& name, const string& id, int age) 
         : Person(name, id, age), gpa(0.0) {}
-    
-    ~Student() {
-        enrolledCourses.clear();
-    }
-    
+
     double getGPA() const { return gpa; }
     void updateGPA(double newGpa) { gpa = newGpa; }
-    
-    void enrollCourse(Course* course);
-    void dropCourse(const string& courseId);
+
+    void enrollCourse(Course* course) {
+        if (!course) {
+            throw invalid_argument("Invalid course pointer");
+        }
+        if (enrolledCourses.find(course->getCourseCode()) != enrolledCourses.end()) {
+            throw EnrollmentException("Student already enrolled in this course");
+        }
+        enrolledCourses[course->getCourseCode()] = course;
+    }
+
+    void dropCourse(const string& courseId) {
+        if (enrolledCourses.find(courseId) == enrolledCourses.end()) {
+            throw NotFoundException("Enrollment", courseId);
+        }
+        enrolledCourses.erase(courseId);
+    }
+
     const map<string, Course*>& getEnrolledCourses() const { return enrolledCourses; }
-    
+
     void display() const override {
         Person::display();
         cout << "GPA: " << fixed << setprecision(2) << gpa << endl;
@@ -134,64 +162,48 @@ private:
     vector<Course*> coursesTeaching;
 
 public:
-    Faculty(const string& name, const string& id, int age, 
-            const string& specialization)
+    Faculty(const string& name, const string& id, int age, const string& specialization)
         : Person(name, id, age), specialization(specialization) {}
-    
-    ~Faculty() {
-        coursesTeaching.clear();
-    }
-    
+
     string getSpecialization() const { return specialization; }
     void setSpecialization(const string& specialization) { 
         this->specialization = specialization; 
     }
-    
-    void assignCourse(Course* course);
-    void removeCourse(const string& courseId);
+
+    void assignCourse(Course* course) {
+        if (!course) {
+            throw invalid_argument("Invalid course pointer");
+        }
+        if (find(coursesTeaching.begin(), coursesTeaching.end(), course) != coursesTeaching.end()) {
+            throw EnrollmentException("Faculty already assigned to this course");
+        }
+        coursesTeaching.push_back(course);
+    }
+
+    void removeCourse(const string& courseId) {
+        auto it = find_if(coursesTeaching.begin(), coursesTeaching.end(),
+            [&courseId](Course* c) { return c && c->getCourseCode() == courseId; });
+        
+        if (it == coursesTeaching.end()) {
+            throw NotFoundException("Course assignment", courseId);
+        }
+        
+        coursesTeaching.erase(it);
+    }
+
     const vector<Course*>& getCoursesTeaching() const { return coursesTeaching; }
-    
+
     void display() const override {
         Person::display();
         cout << "Specialization: " << specialization << endl;
-    }
-};
-
-// ====================== Course Class ======================
-class Course {
-private:
-    string courseCode;
-    string title;
-    Faculty* facultyInCharge;
-    map<string, Student*> enrolledStudents;
-
-public:
-    Course(const string& courseCode, const string& title)
-        : courseCode(courseCode), title(title), facultyInCharge(nullptr) {}
-    
-    ~Course() {
-        enrolledStudents.clear();
-    }
-    
-    string getCourseCode() const { return courseCode; }
-    string getTitle() const { return title; }
-    Faculty* getFacultyInCharge() const { return facultyInCharge; }
-    
-    void assignFaculty(Faculty* faculty);
-    void removeFaculty();
-    
-    void enrollStudent(Student* student);
-    void dropStudent(const string& studentId);
-    const map<string, Student*>& getEnrolledStudents() const { return enrolledStudents; }
-    
-    void display() const {
-        cout << "Course Code: " << courseCode << "\nTitle: " << title << endl;
-        if (facultyInCharge) {
-            cout << "Faculty In Charge: " << facultyInCharge->getName() << endl;
-        } else {
-            cout << "Faculty In Charge: Not assigned" << endl;
+        if (!coursesTeaching.empty()) {
+            cout << "Courses Teaching:\n";
+            for (const auto& course : coursesTeaching) {
+                if (course) {
+                    cout << "- " << course->getCourseCode() << ": " << course->getTitle() << endl;
+                }
+            }
         }
-        cout << "Enrolled Students: " << enrolledStudents.size() << endl;
     }
 };
 
@@ -309,6 +321,27 @@ public:
             cout << "No grade records found for this course.\n";
         }
     }
+    
+    const map<string, map<string, Grade>>& getAllGrades() const {
+        return grades;
+    }
+};
+
+// ====================== Notification Class ======================
+template<typename T>
+class Notification {
+    T message;
+    string timestamp;
+public:
+    Notification(const T& msg) : message(msg) {
+        time_t now = time(nullptr);
+        timestamp = ctime(&now);
+        timestamp.pop_back(); // Remove newline
+    }
+    
+    void display() const {
+        cout << "[" << timestamp << "] " << message << endl;
+    }
 };
 
 // ====================== USMS Class ======================
@@ -324,40 +357,102 @@ private:
         system("mkdir -p data");
         
         try {
+            // Load students
             ifstream studentFile("data/students.txt");
             if (studentFile) {
-                string name, id;
-                int age;
-                while (studentFile >> name >> id >> age) {
+                string line;
+                while (getline(studentFile, line)) { // Name
+                    string name = line;
+                    if (!getline(studentFile, line)) break; // ID
+                    string id = line;
+                    if (!getline(studentFile, line)) break; // Age
+                    int age = stoi(line);
                     students[id] = new Student(name, id, age);
                 }
                 studentFile.close();
-            } else {
-                cerr << "Note: students.txt not found. Starting with empty student records.\n";
             }
             
+            // Load faculty
             ifstream facultyFile("data/faculty.txt");
             if (facultyFile) {
-                string name, id, specialization;
-                int age;
-                while (facultyFile >> name >> id >> age >> specialization) {
+                string line;
+                while (getline(facultyFile, line)) { // Name
+                    string name = line;
+                    if (!getline(facultyFile, line)) break; // ID
+                    string id = line;
+                    if (!getline(facultyFile, line)) break; // Age
+                    int age = stoi(line);
+                    if (!getline(facultyFile, line)) break; // Specialization
+                    string specialization = line;
                     faculty[id] = new Faculty(name, id, age, specialization);
                 }
                 facultyFile.close();
-            } else {
-                cerr << "Note: faculty.txt not found. Starting with empty faculty records.\n";
             }
             
+            // Load courses
             ifstream courseFile("data/courses.txt");
             if (courseFile) {
-                string code, title;
-                while (courseFile >> code >> title) {
+                string line;
+                while (getline(courseFile, line)) { // Course code
+                    string code = line;
+                    if (!getline(courseFile, line)) break; // Title
+                    string title = line;
                     courses[code] = new Course(code, title);
                 }
                 courseFile.close();
-            } else {
-                cerr << "Note: courses.txt not found. Starting with empty course records.\n";
             }
+            
+            // Load enrollments
+            ifstream enrollFile("data/enrollments.txt");
+            if (enrollFile) {
+                string studentId, courseCode;
+                while (enrollFile >> studentId >> courseCode) {
+                    if (students.find(studentId) != students.end() && 
+                        courses.find(courseCode) != courses.end()) {
+                        students[studentId]->enrollCourse(courses[courseCode]);
+                        courses[courseCode]->enrollStudent(students[studentId]);
+                    }
+                }
+                enrollFile.close();
+            }
+            
+            // Load faculty assignments
+            ifstream assignFile("data/assignments.txt");
+            if (assignFile) {
+                string facultyId, courseCode;
+                while (assignFile >> facultyId >> courseCode) {
+                    if (faculty.find(facultyId) != faculty.end() && 
+                        courses.find(courseCode) != courses.end()) {
+                        courses[courseCode]->assignFaculty(faculty[facultyId]);
+                        faculty[facultyId]->assignCourse(courses[courseCode]);
+                    }
+                }
+                assignFile.close();
+            }
+            
+            // Load grades
+            ifstream gradeFile("data/grades.txt");
+            if (gradeFile) {
+                string studentId, courseCode, gradeStr;
+                while (gradeFile >> studentId >> courseCode >> gradeStr) {
+                    Grade grade;
+                    switch (gradeStr[0]) {
+                        case 'A': grade = Grade::A; break;
+                        case 'B': grade = Grade::B; break;
+                        case 'C': grade = Grade::C; break;
+                        case 'D': grade = Grade::D; break;
+                        case 'F': grade = Grade::F; break;
+                        default: continue;
+                    }
+                    gradebook.addGrade(studentId, courseCode, grade);
+                    if (students.find(studentId) != students.end()) {
+                        students[studentId]->updateGPA(gradebook.calculateGPA(studentId));
+                    }
+                }
+                gradeFile.close();
+            }
+            
+            notifications.emplace_back("System data loaded successfully");
         } catch (const exception& e) {
             cerr << "Warning: Error loading data files: " << e.what() << "\n";
         }
@@ -367,47 +462,82 @@ private:
         system("mkdir -p data");
         
         try {
+            // Save students
             ofstream studentFile("data/students.txt");
-            if (!studentFile) {
-                cerr << "Error opening students.txt for writing\n";
-                return;
-            }
             for (const auto& s : students) {
                 if (s.second) {
-                    studentFile << s.second->getName() << " " 
-                              << s.second->getId() << " " 
+                    studentFile << s.second->getName() << "\n" 
+                              << s.second->getId() << "\n" 
                               << s.second->getAge() << "\n";
                 }
             }
             studentFile.close();
             
+            // Save faculty
             ofstream facultyFile("data/faculty.txt");
-            if (!facultyFile) {
-                cerr << "Error opening faculty.txt for writing\n";
-                return;
-            }
             for (const auto& f : faculty) {
                 if (f.second) {
-                    facultyFile << f.second->getName() << " " 
-                               << f.second->getId() << " " 
-                               << f.second->getAge() << " " 
+                    facultyFile << f.second->getName() << "\n" 
+                               << f.second->getId() << "\n" 
+                               << f.second->getAge() << "\n" 
                                << f.second->getSpecialization() << "\n";
                 }
             }
             facultyFile.close();
             
+            // Save courses
             ofstream courseFile("data/courses.txt");
-            if (!courseFile) {
-                cerr << "Error opening courses.txt for writing\n";
-                return;
-            }
             for (const auto& c : courses) {
                 if (c.second) {
-                    courseFile << c.second->getCourseCode() << " " 
+                    courseFile << c.second->getCourseCode() << "\n" 
                              << c.second->getTitle() << "\n";
                 }
             }
             courseFile.close();
+            
+            // Save enrollments
+            ofstream enrollFile("data/enrollments.txt");
+            for (const auto& s : students) {
+                if (s.second) {
+                    const auto& enrolledCourses = s.second->getEnrolledCourses();
+                    for (const auto& c : enrolledCourses) {
+                        if (c.second) {
+                            enrollFile << s.first << " " << c.first << "\n";
+                        }
+                    }
+                }
+            }
+            enrollFile.close();
+            
+            // Save faculty assignments
+            ofstream assignFile("data/assignments.txt");
+            for (const auto& c : courses) {
+                if (c.second && c.second->getFacultyInCharge()) {
+                    assignFile << c.second->getFacultyInCharge()->getId() << " " 
+                             << c.first << "\n";
+                }
+            }
+            assignFile.close();
+            
+            // Save grades
+            ofstream gradeFile("data/grades.txt");
+            const auto& allGrades = gradebook.getAllGrades();
+            for (const auto& studentGrades : allGrades) {
+                for (const auto& courseGrade : studentGrades.second) {
+                    char gradeChar;
+                    switch (courseGrade.second) {
+                        case Grade::A: gradeChar = 'A'; break;
+                        case Grade::B: gradeChar = 'B'; break;
+                        case Grade::C: gradeChar = 'C'; break;
+                        case Grade::D: gradeChar = 'D'; break;
+                        case Grade::F: gradeChar = 'F'; break;
+                    }
+                    gradeFile << studentGrades.first << " " 
+                             << courseGrade.first << " " 
+                             << gradeChar << "\n";
+                }
+            }
+            gradeFile.close();
             
             notifications.emplace_back("System data saved successfully");
         } catch (const exception& e) {
@@ -507,7 +637,8 @@ public:
     }
     
     Student* getStudent(const string& id) const {
-        return searchById(students, id);
+        auto it = students.find(id);
+        return it != students.end() ? it->second : nullptr;
     }
     
     void displayAllStudents() const {
@@ -541,7 +672,8 @@ public:
     }
     
     Faculty* getFaculty(const string& id) const {
-        return searchById(faculty, id);
+        auto it = faculty.find(id);
+        return it != faculty.end() ? it->second : nullptr;
     }
     
     void displayAllFaculty() const {
@@ -584,7 +716,8 @@ public:
     }
     
     Course* getCourse(const string& courseCode) const {
-        return searchById(courses, courseCode);
+        auto it = courses.find(courseCode);
+        return it != courses.end() ? it->second : nullptr;
     }
     
     void displayAllCourses() const {
@@ -595,32 +728,28 @@ public:
         Student* student = getStudent(studentId);
         Course* course = getCourse(courseCode);
         
-        if (student && course) {
-            course->enrollStudent(student);
-            student->enrollCourse(course);
-            notifications.emplace_back("Enrolled student " + studentId + " in course " + courseCode);
-        } else {
-            if (!student) throw NotFoundException("Student", studentId);
-            if (!course) throw NotFoundException("Course", courseCode);
-        }
+        if (!student) throw NotFoundException("Student", studentId);
+        if (!course) throw NotFoundException("Course", courseCode);
+        
+        course->enrollStudent(student);
+        student->enrollCourse(course);
+        notifications.emplace_back("Enrolled student " + studentId + " in course " + courseCode);
     }
     
     void dropStudentFromCourse(const string& studentId, const string& courseCode) {
         Student* student = getStudent(studentId);
         Course* course = getCourse(courseCode);
         
-        if (student && course) {
-            course->dropStudent(studentId);
-            student->dropCourse(courseCode);
-            gradebook.removeGrade(studentId, courseCode);
-            
-            double newGpa = gradebook.calculateGPA(studentId);
-            student->updateGPA(newGpa);
-            notifications.emplace_back("Dropped student " + studentId + " from course " + courseCode);
-        } else {
-            if (!student) throw NotFoundException("Student", studentId);
-            if (!course) throw NotFoundException("Course", courseCode);
-        }
+        if (!student) throw NotFoundException("Student", studentId);
+        if (!course) throw NotFoundException("Course", courseCode);
+        
+        course->dropStudent(studentId);
+        student->dropCourse(courseCode);
+        gradebook.removeGrade(studentId, courseCode);
+        
+        double newGpa = gradebook.calculateGPA(studentId);
+        student->updateGPA(newGpa);
+        notifications.emplace_back("Dropped student " + studentId + " from course " + courseCode);
     }
     
     void addGrade(const string& studentId, const string& courseCode, Grade grade) {
@@ -692,6 +821,10 @@ public:
     
     void displayStudentCourses(const string& studentId) const {
         Student* student = getStudent(studentId);
+        if (!student) {
+            throw NotFoundException("Student", studentId);
+        }
+        
         const auto& enrolledCourses = student->getEnrolledCourses();
         
         if (enrolledCourses.empty()) {
@@ -700,13 +833,19 @@ public:
         }
         
         for (const auto& course : enrolledCourses) {
-            cout << course.second->getCourseCode() << " - " 
-                 << course.second->getTitle() << endl;
+            if (course.second) {
+                cout << course.second->getCourseCode() << " - " 
+                     << course.second->getTitle() << endl;
+            }
         }
     }
     
     void displayCourseStudents(const string& courseCode) const {
         Course* course = getCourse(courseCode);
+        if (!course) {
+            throw NotFoundException("Course", courseCode);
+        }
+        
         const auto& enrolledStudents = course->getEnrolledStudents();
         
         if (enrolledStudents.empty()) {
@@ -715,8 +854,10 @@ public:
         }
         
         for (const auto& student : enrolledStudents) {
-            cout << student.second->getId() << " - " 
-                 << student.second->getName() << endl;
+            if (student.second) {
+                cout << student.second->getId() << " - " 
+                     << student.second->getName() << endl;
+            }
         }
     }
     
@@ -777,88 +918,6 @@ public:
         }
     }
 };
-
-// ====================== Method Implementations ======================
-void Student::enrollCourse(Course* course) {
-    if (!course) {
-        throw invalid_argument("Invalid course pointer");
-    }
-    if (enrolledCourses.find(course->getCourseCode()) != enrolledCourses.end()) {
-        throw EnrollmentException("Student already enrolled in this course");
-    }
-    enrolledCourses[course->getCourseCode()] = course;
-}
-
-void Student::dropCourse(const string& courseId) {
-    if (enrolledCourses.find(courseId) == enrolledCourses.end()) {
-        throw NotFoundException("Enrollment", courseId);
-    }
-    enrolledCourses.erase(courseId);
-}
-
-void Faculty::assignCourse(Course* course) {
-    if (!course) {
-        throw invalid_argument("Invalid course pointer");
-    }
-    // Check if already teaching this course
-    if (find(coursesTeaching.begin(), coursesTeaching.end(), course) != coursesTeaching.end()) {
-        throw EnrollmentException("Faculty already assigned to this course");
-    }
-    coursesTeaching.push_back(course);
-    course->assignFaculty(this);
-}
-
-void Faculty::removeCourse(const string& courseId) {
-    auto it = find_if(coursesTeaching.begin(), coursesTeaching.end(),
-        [&courseId](Course* c) { return c && c->getCourseCode() == courseId; });
-    
-    if (it == coursesTeaching.end()) {
-        throw NotFoundException("Course assignment", courseId);
-    }
-    
-    if (*it) {
-        (*it)->removeFaculty();
-    }
-    coursesTeaching.erase(it);
-}
-
-void Course::assignFaculty(Faculty* faculty) {
-    if (!faculty) {
-        throw invalid_argument("Invalid faculty pointer");
-    }
-    if (facultyInCharge == faculty) {
-        throw EnrollmentException("Faculty already in charge of this course");
-    }
-    facultyInCharge = faculty;
-    faculty->assignCourse(this);
-}
-
-void Course::removeFaculty() {
-    if (facultyInCharge) {
-        // This will call Faculty::removeCourse which will call this function again
-        // To prevent infinite recursion, we set to null first
-        Faculty* temp = facultyInCharge;
-        facultyInCharge = nullptr;
-        temp->removeCourse(courseCode);
-    }
-}
-
-void Course::enrollStudent(Student* student) {
-    if (!student) {
-        throw invalid_argument("Invalid student pointer");
-    }
-    if (enrolledStudents.find(student->getId()) != enrolledStudents.end()) {
-        throw EnrollmentException("Student already enrolled in this course");
-    }
-    enrolledStudents[student->getId()] = student;
-}
-
-void Course::dropStudent(const string& studentId) {
-    if (enrolledStudents.find(studentId) == enrolledStudents.end()) {
-        throw NotFoundException("Enrollment", studentId);
-    }
-    enrolledStudents.erase(studentId);
-}
 
 // ====================== Menu Implementations ======================
 void USMS::studentManagementMenu() {
@@ -993,14 +1052,59 @@ void USMS::courseManagementMenu() {
                     removeCourse(code);
                     cout << "Course removed successfully.\n";
                     break;
-                case 3:
+                case 3: {
                     cout << "Enter course code: ";
                     cin >> code;
                     cout << "Enter faculty ID: ";
                     cin >> facultyId;
-                    getCourse(code)->assignFaculty(getFaculty(facultyId));
-                    cout << "Faculty assigned successfully.\n";
+                    
+                    Course* course = getCourse(code);
+                    Faculty* facultyMember = getFaculty(facultyId);
+                    
+                    if (!course) throw NotFoundException("Course", code);
+                    if (!facultyMember) throw NotFoundException("Faculty", facultyId);
+                    
+                    // Check if faculty is already assigned to this course
+                    if (course->getFacultyInCharge() == facultyMember) {
+                        cout << "This faculty is already assigned to this course.\n";
+                        break;
+                    }
+                    
+                    // Check if faculty is assigned to another course
+                    bool assignedToOtherCourse = false;
+                    for (const auto& c : courses) {
+                        if (c.second && c.second->getFacultyInCharge() == facultyMember && c.second != course) {
+                            assignedToOtherCourse = true;
+                            break;
+                        }
+                    }
+                    
+                    if (assignedToOtherCourse) {
+                        cout << "This faculty is already assigned to another course.\n";
+                        cout << "Do you want to reassign them to this course? (y/n): ";
+                        char confirm;
+                        cin >> confirm;
+                        if (tolower(confirm) == 'y') {
+                            // Remove from other course first
+                            for (auto& c : courses) {
+                                if (c.second && c.second->getFacultyInCharge() == facultyMember) {
+                                    c.second->removeFaculty();
+                                }
+                            }
+                            // Assign to new course
+                            course->assignFaculty(facultyMember);
+                            facultyMember->assignCourse(course);
+                            cout << "Faculty reassigned successfully.\n";
+                        } else {
+                            cout << "Assignment cancelled.\n";
+                        }
+                    } else {
+                        course->assignFaculty(facultyMember);
+                        facultyMember->assignCourse(course);
+                        cout << "Faculty assigned successfully.\n";
+                    }
                     break;
+                }
                 case 4:
                     displayAllCourses();
                     break;
@@ -1179,4 +1283,4 @@ int main() {
     USMS system;
     system.run();
     return 0;
-} 
+}
