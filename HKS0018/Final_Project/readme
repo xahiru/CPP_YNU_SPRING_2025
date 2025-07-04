@@ -1,0 +1,78 @@
+University Student Management System (USMS)
+
+Overview:
+This is a University Management System which manges student, faculty, courses and 
+Grades through a console based interface. 
+
+Key Features
+1.Student Management: Add, view, update, and delete student records
+2.Faculty Management: Add, view, update, and delete faculty records
+3.Course Management: Add, view, update, and delete courses
+4.Enrollment System: Enroll students in courses
+5.Gradebook: Assign and manage student grades
+6.Transcripts: View student transcripts with GPA calculation
+7.Data Persistence: All data is automatically saved to and loaded from files
+
+
+How to compile and run:
+Linux/Ubuntu 
+compile : g++ -std=c++17 -o USMS USMS.cpp
+Run the program : ./USMS
+
+Windows:
+First Install MinGW-w64
+compile: g++ -std=c++17 -o USMS.exe USMS.cpp
+USMS.exe
+
+USMS Featurs Explained:
+This system provides complete management of university operations through 15 key features organized into 4 main categories:
+
+1. People Management:
+Student Operations:
+Add Student: Create new student records with ID, name, age, GPA, and address
+Update Student: Modify existing student information (all fields editable)
+Delete Student: Remove student records and automatically clean up enrollments/grades
+View All Students: Display complete list of students with all details
+
+Faculty Operations:
+Add Faculty: Create new faculty records with ID, name, age, specialization, and department
+Update Faculty: Modify faculty information and automatically update course assignments
+Delete Faculty: Remove faculty while preserving their courses (unassigns them)
+View All Faculty: Display complete faculty directory
+
+2. Course Management:
+Core Course Functions:
+Add Course: Create new courses with code, title, and optional faculty assignment
+Update Course: Modify course details or reassign faculty
+Delete Course: Remove courses and automatically clean up enrollments/grades
+View All Courses: Display course catalog with enrollment numbers
+Enrollment System
+Enroll Students: Register students in courses with validation checks
+Automatic Cleanup: Student deletions automatically remove them from all courses
+
+3. Academic Records:
+Gradebook System
+Assign Grades: Record letter grades (A-F) for students in their courses
+Update Grades: Modify existing grade entries
+Automatic GPA Calculation: System computes GPA based on current grades
+Transcript Generation: View complete academic records including:
+
+4. Data Management
+Persistence Features
+Automatic Saving: All changes immediately saved to data files
+Automatic Loading: Data restored when program launches
+File Integrity: System creates missing data files on startup
+Data Files:
+students.dat: Stores all student records
+faculty.dat: Stores all faculty records
+courses.dat: Stores course information and enrollments
+grades.dat: Maintains grade records
+
+
+References:
+https://www.youtube.com/watch?v=JrVhuNiu5qI&t=285s
+https://www.youtube.com/watch?v=wN0x9eZLix4
+https://www.youtube.com/watch?v=-TkoO8Z07hI&t=5281s
+
+
+Name : KAZI SHIMANTO HAQUE.
