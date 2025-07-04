@@ -1,0 +1,2 @@
+CS101,Computer Science,F001
+AI102,Atrificial Intelligence,F001
